@@ -1,86 +1,111 @@
 {{ define "head" }}
-<meta name="description" content="{{ .Params.description }}">
-<link rel="stylesheet" href="{{.Site.Params.staticPath}}/css/about.css">
+  <!-- 设置网页的描述信息，用于 SEO -->
+  <meta name="description" content="{{ .Params.description }}">  <!-- ✅已修改：页面参数中设置的 description -->
 
-<!-- fontawesome -->
-<script defer src="{{.Site.Params.staticPath}}/fontawesome-6/all-6.4.2.js"></script>
+  <!-- 引入 About 页面专用样式 -->
+  <link rel="stylesheet" href="{{.Site.Params.staticPath}}/css/about.css">  <!-- ✅已修改：通过 config 统一路径 -->
+
+  <!-- 引入 Font Awesome 图标库，用于社交媒体图标显示 -->
+  <script defer src="{{.Site.Params.staticPath}}/fontawesome-6/all-6.4.2.js"></script>  <!-- ✅已修改 -->
 {{ end }}
 
 {{ define "title" }}
-{{.Title }} | {{ .Site.Title }}
+  <!-- 设置网页浏览器 Tab 的标题，如“About Me | Benjamin L. Rockefeller” -->
+  {{ .Title }} | {{ .Site.Title }}
 {{ end }}
 
 {{ define "main" }}
 <section id="single">
-    <div class="container">
-        <div class="title mb-3">
-            <h1 class="text-center mb-4">{{ .Title }}</h1>
-        </div>
-        <div class="row justify-content-center">
-            {{ if .Params.image }}
-            <div class="col-sm-12 col-md-12 col-lg-3 px-3">
-                <div class="sticky-sidebar">
-                    <aside class="aboutImg">
-                        <div class="text-center">
-                            <img src="{{ .Params.image }}" class="mx-auto rounded" alt="">
-                        </div>
-                        <h2 class="text-center pt-3">
-                            {{ .Params.name }}
-                        </h2>
-                        <div class="aboutImg-content">
-                            <ul class="list-inline pt-3 text-center">
-                                {{ range .Params.socialLinks.fontAwesomeIcons }}
-                                <li class="list-inline-item text-center">
-                                    <a href="{{ .url }}" target="_blank">
-                                        <i class="{{ .icon }}"></i>
-                                    </a>
-                                </li>
-                                {{ end }}
-
-                                {{ range .Params.socialLinks.customIcons }}
-                                <li class="list-inline-item text-center">
-                                    <a href="{{ .url }}" target="_blank" class="img-icon">
-                                        <img src="{{ .icon }}">
-                                    </a>
-                                </li>
-                                {{ end }}
-                            </ul>
-                        </div>
-                    </aside>
-                </div>
-            </div>
-            {{ end }}
-
-            <div class="col-sm-12 col-md-12 col-lg-6 pt-4 p-2">
-                <div class="pr-lg-4">
-                    <article class="page-content p-2">
-                        {{ .Content | emojify }}
-                    </article>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="title mb-3">
+      <!-- 页面主标题，来自 content/about.md 的 front matter -->
+      <h1 class="text-center mb-4">{{ .Title }}</h1>
     </div>
-    <button class="p-2 px-3" onclick="topFunction()" id="topScroll">
-        <i class="fas fa-angle-up"></i>
-    </button>
+
+    <div class="row justify-content-center">
+      {{ if .Params.image }}
+      <!-- 左侧栏：头像、姓名、社交图标 -->
+      <div class="col-sm-12 col-md-12 col-lg-3 px-3">
+        <div class="sticky-sidebar">
+          <aside class="aboutImg">
+            <div class="text-center">
+              <!-- 显示头像图片 -->
+              <img src="{{ .Params.image }}" class="mx-auto rounded" alt="个人头像">  <!-- ✅已修改：加入 alt 语义提升无障碍 -->
+            </div>
+            <h2 class="text-center pt-3">
+              <!-- 显示姓名 -->
+              {{ .Params.name }}  <!-- ✅已修改：从 front matter 读取姓名 -->
+            </h2>
+
+            <div class="aboutImg-content">
+              <!-- 社交图标部分 -->
+              <ul class="list-inline pt-3 text-center">
+
+                <!-- 使用 Font Awesome 图标的社交链接 -->
+                {{ range .Params.socialLinks.fontAwesomeIcons }}
+                <li class="list-inline-item text-center">
+                  <a href="{{ .url }}" target="_blank">
+                    <i class="{{ .icon }}"></i>
+                  </a>
+                </li>
+                {{ end }}
+
+                <!-- 使用自定义图标的社交链接 -->
+                {{ range .Params.socialLinks.customIcons }}
+                <li class="list-inline-item text-center">
+                  <a href="{{ .url }}" target="_blank" class="img-icon">
+                    <img src="{{ .icon }}" alt="社交图标">
+                  </a>
+                </li>
+                {{ end }}
+
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </div>
+      {{ end }}
+
+      <!-- 主内容区 -->
+      <div class="col-sm-12 col-md-12 col-lg-6 pt-4 p-2">
+        <div class="pr-lg-4">
+          <article class="page-content p-2">
+            <!-- 加载 content/about.md 的正文内容，可支持 emoji -->
+            {{ .Content | emojify }}
+          </article>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 返回顶部按钮 -->
+  <button class="p-2 px-3" onclick="topFunction()" id="topScroll">
+    <i class="fas fa-angle-up"></i>
+  </button>
 </section>
 
+<!-- 页面 JS：用于滚动监听与回到顶部 -->
 <script>
-    var topScroll = document.getElementById("topScroll");
-    window.onscroll = function () { scrollFunction() };
+  var topScroll = document.getElementById("topScroll");
 
-    function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            topScroll.style.display = "block";
-        } else {
-            topScroll.style.display = "none";
-        }
-    }
+  // 当用户滚动页面时触发函数
+  window.onscroll = function () {
+    scrollFunction();
+  };
 
-    function topFunction() {
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
+  // 控制返回顶部按钮的显示与隐藏逻辑
+  function scrollFunction() {
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+      topScroll.style.display = "block";
+    } else {
+      topScroll.style.display = "none";
     }
+  }
+
+  // 点击按钮时返回页面顶部
+  function topFunction() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  }
 </script>
-
 {{ end }}
